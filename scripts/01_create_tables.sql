@@ -1,4 +1,5 @@
 -- TABLAS MAESTRAS
+CREATE SCHEMA IF NOT EXISTS icastro;
 
 CREATE TABLE icastro.clientes (
     id_cliente SERIAL PRIMARY KEY,
@@ -64,4 +65,3 @@ CREATE TABLE icastro.detalle_venta (
         FOREIGN KEY (id_vehiculo)
         REFERENCES icastro.vehiculos(id_vehiculo)
 );
-
