@@ -1,4 +1,5 @@
 -- TABLAS MAESTRAS
+CREATE SCHEMA IF NOT EXISTS icastro;
 
 CREATE TABLE icastro.clientes (
     id_cliente SERIAL PRIMARY KEY,
@@ -33,7 +34,7 @@ CREATE TABLE icastro.vehiculos (
     disponible BOOLEAN NOT NULL,
     CONSTRAINT fk_marca
         FOREIGN KEY (id_marca)
-        REFERENCES jcastro.marcas(id_marca)
+        REFERENCES icastro.marcas(id_marca)
 );
 
 -- TABLAS TRANSACCIONALES
@@ -46,10 +47,10 @@ CREATE TABLE icastro.ventas (
     total DECIMAL(10,2) NOT NULL,
     CONSTRAINT fk_cliente
         FOREIGN KEY (id_cliente)
-        REFERENCES jcastro.clientes(id_cliente),
+        REFERENCES icastro.clientes(id_cliente),
     CONSTRAINT fk_vendedor
         FOREIGN KEY (id_vendedor)
-        REFERENCES jcastro.vendedores(id_vendedor)
+        REFERENCES icastro.vendedores(id_vendedor)
 );
 
 CREATE TABLE icastro.detalle_venta (
@@ -59,8 +60,8 @@ CREATE TABLE icastro.detalle_venta (
     precio_unitario DECIMAL(10,2) NOT NULL,
     CONSTRAINT fk_venta
         FOREIGN KEY (id_venta)
-        REFERENCES jcastro.ventas(id_venta),
+        REFERENCES icastro.ventas(id_venta),
     CONSTRAINT fk_vehiculo
         FOREIGN KEY (id_vehiculo)
-        REFERENCES jcastro.vehiculos(id_vehiculo)
+        REFERENCES icastro.vehiculos(id_vehiculo)
 );
