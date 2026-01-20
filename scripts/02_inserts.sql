@@ -1,5 +1,5 @@
 -- =========================
--- CLIENTES (6 registros)
+-- CLIENTES
 -- =========================
 INSERT INTO icastro.clientes
 (nombre, apellido, cedula, email, telefono, fecha_registro)
@@ -12,7 +12,7 @@ VALUES
 ('Sofia', 'Martinez', '0102030410', 'sofia@mail.com', '0944444444', '2024-05-10');
 
 -- =========================
--- VENDEDORES (4 registros)
+-- VENDEDORES
 -- =========================
 INSERT INTO icastro.vendedores
 (nombre, apellido, email, fecha_contratacion)
@@ -23,7 +23,7 @@ VALUES
 ('Miguel', 'Ortega', 'miguel@empresa.com', '2023-04-10');
 
 -- =========================
--- MARCAS (5 registros)
+-- MARCAS
 -- =========================
 INSERT INTO icastro.marcas (nombre, pais_origen)
 VALUES
@@ -34,7 +34,7 @@ VALUES
 ('Nissan', 'Japón');
 
 -- =========================
--- VEHICULOS (6 registros)
+-- VEHICULOS 
 -- =========================
 INSERT INTO icastro.vehiculos
 (modelo, anio, precio, id_marca, disponible)
@@ -47,7 +47,7 @@ VALUES
 ('Sentra', 2021, 19000, 5, true);
 
 -- =========================
--- VENTAS (5 registros)
+-- VENTAS 
 -- =========================
 INSERT INTO icastro.ventas
 (id_cliente, id_vendedor, fecha_venta, total)
@@ -59,7 +59,7 @@ VALUES
 (5, 4, '2024-05-05', 19000);
 
 -- =========================
--- DETALLE DE VENTA (5 registros)
+-- DETALLE DE VENTA
 -- =========================
 INSERT INTO icastro.detalle_venta
 (id_venta, id_vehiculo, precio_unitario)

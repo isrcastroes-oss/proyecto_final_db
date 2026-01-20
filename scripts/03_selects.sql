@@ -7,29 +7,28 @@
 -- TOP 5 CLIENTES POR GASTO TOTAL (USANDO CTE)
 -- =====================================================
 
+
 WITH total_por_cliente AS (
     SELECT
-        c.id_cliente,
-        c.nombre,
-        c.apellido,
-        c.email,
+        v.id_cliente,
         SUM(v.total) AS total_gastado
-    FROM icastro.clientes c
-    JOIN icastro.ventas v ON c.id_cliente = v.id_cliente
-    GROUP BY c.id_cliente, c.nombre, c.apellido, c.email
+    FROM icastro.ventas v
+    GROUP BY v.id_cliente
 )
 SELECT
-    nombre,
-    apellido,
-    email,
-    total_gastado
-FROM total_por_cliente
-ORDER BY total_gastado DESC
+    c.nombre,
+    c.apellido,
+    c.email,
+    tpc.total_gastado
+FROM total_por_cliente tpc
+JOIN icastro.clientes c 
+    ON tpc.id_cliente = c.id_cliente
+ORDER BY tpc.total_gastado DESC
 LIMIT 5;
 
 
 -- =====================================================
--- VEHÍCULOS MÁS VENDIDOS
+-- VEHÍCULOS MÁS VENDIDOS (CANTIDAD, MONTO Y RANKING)
 -- =====================================================
 
 WITH ventas_por_vehiculo AS (
@@ -73,26 +72,28 @@ ORDER BY monto_total DESC;
 -- =====================================================
 -- PRODUCTIVIDAD POR VENDEDOR (USANDO CTE)
 -- =====================================================
+-- El CTE calcula métricas
+-- El SELECT final presenta resultados
 
 WITH ventas_por_vendedor AS (
     SELECT
         ve.id_vendedor,
-        ve.nombre,
-        ve.apellido,
         COUNT(v.id_venta) AS numero_ventas,
         SUM(v.total) AS total_vendido
     FROM icastro.vendedores ve
     JOIN icastro.ventas v ON ve.id_vendedor = v.id_vendedor
-    GROUP BY ve.id_vendedor, ve.nombre, ve.apellido
+    GROUP BY ve.id_vendedor
 )
 SELECT
-    nombre,
-    apellido,
-    numero_ventas,
-    total_vendido,
-    total_vendido / NULLIF(numero_ventas, 0) AS ticket_promedio
-FROM ventas_por_vendedor
-ORDER BY total_vendido DESC;
+    ve.nombre,
+    ve.apellido,
+    vpv.numero_ventas,
+    vpv.total_vendido,
+    vpv.total_vendido / NULLIF(vpv.numero_ventas, 0) AS ticket_promedio
+FROM ventas_por_vendedor vpv
+JOIN icastro.vendedores ve 
+    ON vpv.id_vendedor = ve.id_vendedor
+ORDER BY vpv.total_vendido DESC;
 
 
 -- =====================================================
@@ -135,12 +136,13 @@ SELECT
     vm.total_marca,
     ROUND((vm.total_marca / tpm.total_mes) * 100, 2) AS porcentaje_participacion
 FROM ventas_mensuales vm
-JOIN total_por_mes tpm ON vm.mes = tpm.mes
+JOIN total_por_mes tpm 
+    ON vm.mes = tpm.mes
 ORDER BY vm.mes, porcentaje_participacion DESC;
 
 
 -- =====================================================
--- AUDITORÍA
+-- AUDITORÍA: VENTAS CON TOTAL INCONSISTENTE
 -- =====================================================
 
 SELECT
@@ -148,13 +150,14 @@ SELECT
     v.total AS total_venta,
     SUM(dv.precio_unitario) AS total_detalle
 FROM icastro.ventas v
-JOIN icastro.detalle_venta dv ON v.id_venta = dv.id_venta
+JOIN icastro.detalle_venta dv 
+    ON v.id_venta = dv.id_venta
 GROUP BY v.id_venta, v.total
 HAVING v.total <> SUM(dv.precio_unitario);
 
 
 -- =====================================================
--- AUDITORÍA
+-- AUDITORÍA: VEHÍCULOS VENDIDOS QUE SIGUEN DISPONIBLES
 -- =====================================================
 
 SELECT DISTINCT
@@ -162,5 +165,6 @@ SELECT DISTINCT
     ve.modelo,
     ve.disponible
 FROM icastro.detalle_venta dv
-JOIN icastro.vehiculos ve ON dv.id_vehiculo = ve.id_vehiculo
+JOIN icastro.vehiculos ve 
+    ON dv.id_vehiculo = ve.id_vehiculo
 WHERE ve.disponible = TRUE;
